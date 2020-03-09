@@ -48,3 +48,26 @@ dev.off()
 png(file = "fan.png", height = 1000, width = 1000)
 plot(aflp_upgma, type="fan",cex = 2)
 dev.off()
+
+#64 smaples####
+sample_64 <- fread("64_samples.csv", stringsAsFactors = FALSE)
+sample_64$samples <- ifelse(nchar(sample_64$samples)==2, paste("sp0", sample_64$samples, sep = ""), paste("sp00", sample_64$samples, sep = ""))
+
+aflp_64 <- aflp_data[sample_64, on = .(sample = samples)]
+#
+matrix_64 <- data.frame(dcast(aflp_64, No.~bp))
+matrix_64 <- data.frame(matrix_64[,-1], row.names = matrix_64[,1])
+matrix_64[is.na(matrix_64)] <- 0
+matrix_64[matrix_64 != 0] <- 1
+#
+aflp_nei_64 <- nei.dist(as.matrix(matrix_64))
+aflp_upgma_64 <- upgma(aflp_nei_64)
+
+#
+png(file = "phylogram_64.png", height = 1500, width = 1000)
+plot(aflp_upgma_64, type="phylogram", cex = 2)
+dev.off()
+
+png(file = "fan.png_64.png", height = 1000, width = 1000)
+plot(aflp_upgma_64, type="fan",cex = 2)
+dev.off()
